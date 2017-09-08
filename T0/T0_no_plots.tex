@@ -1,0 +1,354 @@
+\documentclass[submit]{harvardml}
+
+% Put in your full name and email address.
+\name{Christopher Hase}
+\email{christopher\_hase@g.harvard.edu}
+
+% List any people you worked with.
+\collaborators{%
+None
+}
+
+
+% You don't need to change these.
+\course{CS281-F17}
+\assignment{\hspace{2em}Assignment \#0, v 1.0}
+\duedate{5:00pm Sept. 8th}
+\newcommand{\attr}[1]{\textsf{#1}}
+\usepackage[OT1]{fontenc}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[pdftex]{graphicx}
+\usepackage{fullpage}
+\usepackage{palatino}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{todonotes}
+\usepackage{listings}
+\usepackage{common}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{xifthen}
+\usepackage{soul}
+\usepackage{url}
+\usepackage[mmddyyyy,hhmmss]{datetime}
+\definecolor{verbgray}{gray}{0.9}
+\usepackage{graphicx}
+% Some useful macros.
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\cov}{\text{cov}}
+\renewcommand{\v}[1]{\mathbf{#1}}
+\newcommand{\indep}{\rotatebox[origin=c]{90}{$\models$}}
+
+\begin{document}
+\begin{center}
+    {\Large Homework 0: Preliminary}
+\end{center}
+
+\subsection*{Introduction}
+
+There is a mathematical component and a programming component to this homework.
+Please submit your PDF and Python files to Canvas, and push all of your work
+to your GitHub repository. If a question requires you to make any plots,
+please include those in the writeup.
+
+This assignment is intended to ensure that you have the background required for CS281,
+and have studied the mathematical review notes provided in section.
+You should be able to answer the problems below \textit{without} complicated calculations.
+All questions are worth $70/6 = 11.\bar{6}$ points unless stated otherwise.
+
+\newpage
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% PROBLEM 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Variance and Covariance}
+\begin{problem}
+Let $X$ and~$Y$ be two independent random variables.
+
+\begin{enumerate}[label=(\alph*)]
+\item Show that the independence of~$X$ and~$Y$ implies that their
+covariance is zero.
+
+\item Zero covariance \textit{does not} imply independence between two
+      random variables. Give an example of this.
+
+\item For a scalar constant~$a$, show the following two properties:
+\begin{align*}
+  \E(X + aY) &= \E(X) + a\E(Y)\\
+  \var(X + aY) &= \var(X) + a^2\var(Y)
+\end{align*}
+\end{enumerate}
+\end{problem}
+
+
+
+
+\textbf{(a)} First we'll show that $X \indep Y \Rightarrow E(XY)=E(X)E(Y)$, assuming $X$ and $Y$ are discrete random variables.\\\\
+Using the definition of expectation, we get that:\\\\
+$E(XY) = \sum_{x}\sum_{y}xyP(X=x,Y=y)\\\\=\sum_{x}\sum_{y}xyP(X=x)P(Y=y)\\\\=\sum_{x}xP(X=x)\sum_{y}yP(Y=y)\\\\=E(X)E(Y)$\\\\
+The same can be shown for independent, continuous random variables. Now we can show (a) easily:\\\\
+$Cov(X,Y)=E(XY)-E(X)E(Y)=E(X)E(Y)-E(X)E(Y)=0$\\\\\\
+
+
+
+\textbf{(b)} We'll use the properties of expectation, variance, covariance, and Bernoulli random variables in the following example. \\\\
+Let $X\sim Bern\left(p\right),-Y\sim Bern\left(p\right)$ \\\\
+$Cov\left(X+Y,X-Y\right)=Cov\left(X,X\right)-Cov\left(X,Y\right)+Cov\left(Y,X\right)-Cov\left(Y,Y\right)\\\\=Cov\left(X,X\right)-Cov\left(Y,Y\right)\\\\=Var\left(X\right)-Var\left(Y\right)=0$\\\\$E\left(X-Y\right)=E\left(X\right)+E\left(-Y\right)=2p\neq E\left(X-Y|X+Y=1\right)=1$ \\\\
+Thus, we have $Cov(X+Y,X-Y)=0$ but $X+Y$ and $X-Y$ not independent since \\\\$E(X-Y)\neq E(X-Y|X+Y=1)$ \\\\\\
+
+
+
+\textbf{(c)} For proof the first property, we'll assume $X$ and $Y$ are discrete random variables and use the definition of expectation as well as properties of independent random variables.\\\\
+$E\left(X\right)+aE\left(Y\right)=\sum_{x}xP\left(X=x\right)+a\sum_{y}yP\left(Y=y\right)\\\\=\sum_{x}xP\left(X=x\right)\sum_{y}P\left(Y=y\right)+\sum_{y}ayP\left(Y=y\right)\sum_{x}P\left( X=x\right)\\\\=\sum_{x}\sum_{y}xP\left( X=x\right) P\left( Y=y\right) +\sum_{x}\sum_{y}ayP\left( Y=y\right) P\left( X=x\right)\\\\=\sum_{x}\sum_{y}\left( x+ay\right)P\left( X=x\right) P\left( Y=y\right)\\\\=\sum_{x}\sum_{y}\left( x+ay\right) P\left( X=x,Y=y\right)=E\left( X+aY\right)$ \\\\\\
+For proof of the second property, we'll use properties of independent random variables, expectation, and variance.\\\\
+$Var\left(X+aY\right)=E\left[\left(X+aY\right)^{2}\right]-\left[E\left( X+aY\right)\right] ^{2}\\\\=E\left[ X^{2}+2aXY+a^{2}Y^{2}\right] -\left[ E\left( X\right) +aE\left( Y\right) \right] ^{2}\\\\=E\left( X^{2}\right) +2aE\left( XY\right) +a^{2}E\left( Y^{2}\right) -\left[ E\left( X\right) \right] ^{2}-2aE\left( X\right) E\left( Y\right) -a^{2}\left[ E\left( Y\right) \right] ^{2}\\\\=Var\left( X\right) +a^{2}\left( E\left( Y^{2}\right) -\left[ E\left( Y\right) \right] ^{2}\right)\\\\=Var\left( X\right) +a^{2}Var\left( Y\right)$
+
+
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% PROBLEM 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Densities}
+\begin{problem}
+Answer the following questions:
+\begin{enumerate}[label=(\alph*)]
+  \item Can a probability density function (pdf) ever take values greater than 1?
+  \item Let $X$ be a univariate normally distributed random variable with mean 0
+        and variance $1/100$. What is the pdf of $X$?
+  \item What is the value of this pdf at 0?
+  \item What is the probability that $X = 0$?
+  \item Explain the discrepancy.
+\end{enumerate}
+\end{problem}
+
+
+
+
+\textbf{(a)} Yes. For example, let $X\sim Unif\left( 0,\dfrac {1}{10}\right)$. Then $p\left( x\right) =10$ $\forall x\in\left[ 0,\dfrac {1}{10}\right]$. For continuous random variables, the integral over the support needs to be $1$. For discrete random variables, the sum over the support needs to be $1$.\\\\
+
+
+
+\textbf{(b)} $X\sim N\left( 0,\dfrac {1}{100}\right) \Rightarrow p\left( x\right) =\dfrac {10}{\sqrt {2\pi}}\exp\left( -50x^{2}\right)$\\\\
+
+
+
+\textbf{(c)} $p\left( 0\right) =\dfrac {10}{\sqrt {2\pi}}$\\\\ 
+
+
+
+\textbf{(d)} $P\left( X=0\right) =0$\\\\
+
+
+
+\textbf{(e)} The value of the PDF for a random variable $X$ is not the probability that $X$ takes on a particular value $x$. The value of the PDF at some $x$ that $X$ takes on is the height of the distribution at $x$. The probability of some event associated with the value of $X$ is the area under the PDF that represents that event. The area under the PDF that represents any one particular value of $x$ that $X$ takes on is $0$. This explains why $p\left( 0\right) \neq P\left( X=0\right) =0$.
+
+
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% PROBLEM 3 %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Conditioning and Bayes' rule}
+\begin{problem}
+  Let $\v \mu \in \R^m$ and
+  $\v \Sigma, \v \Sigma' \in \R^{m \times m}$.  Let $X$ be an
+  $m$-dimensional random vector with
+  $X \sim \mathcal{N}(\v \mu, \v \Sigma)$, and let $Y$ be a
+  $m$-dimensional random vector such that
+  $Y \given X \sim \mathcal{N}(X, \v \Sigma')$. Derive the
+  distribution and parameters for each of the following.
+
+\begin{enumerate}[label=(\alph*)]
+  \item The unconditional distribution of $Y$.
+
+  \item The joint distribution for the pair $(X,Y)$.
+
+\end{enumerate}
+
+Hints:
+\begin{itemize}
+\item You may use without proof (but they are good advanced exercises)
+  the closure properties of multivariate normal distributions. Why is
+  it helpful to know when a distribution is normal?
+\item Review Eve's and Adam's Laws, linearity properties of
+  expectation and variance, and Law of Total Covariance.
+
+\end{itemize}
+
+\end{problem}
+
+
+
+
+\textbf{(a)} We can see that $\mathbf{Y}-\mathbf{X}|\mathbf{X}\sim N(\mathbf{0},\mathbf{\Sigma}')$. This distribution is not dependent on $\mathbf{X} \Rightarrow \mathbf{Y}-\mathbf{X}\sim N(\mathbf{0},\mathbf{\Sigma}')$. Since $(\mathbf{Y}-\mathbf{X})\indep \mathbf{X}$, the sum of independent multivariate normal random vectors is a multivariate normal random vector, and $\mathbf{Y}-\mathbf{X}+\mathbf{X}=\mathbf{Y}$, it follows that $\mathbf{Y}\sim N(\boldsymbol{\mu}, \mathbf{\Sigma}+\mathbf{\Sigma}')$.\\\\\\
+
+
+
+
+\textbf{(b)} We are trying to find the joint distribution of $(\mathbf{X},\mathbf{Y})^T$. Since $\mathbf{X}$ is MVN and $\mathbf{Y}|\mathbf{X}$ is MVN, $(\mathbf{X}, \mathbf{Y})^T\sim N(\boldsymbol{\theta}, \boldsymbol{\beta})$ such that $\boldsymbol{\theta}\in \R^{2m}$ and $\boldsymbol{\beta}\in \R^{2m \times 2m}$.\\\\
+According to Theorem 4.3.1 in Murphy's text, $\boldsymbol{\theta}=(E(\mathbf{X}),E(\mathbf{Y}))^T=(\boldsymbol{\mu},\boldsymbol{\mu})^T$\\\\\\
+Also according to Theorem 4.3.1 in Murphy's text, $\boldsymbol{\beta}=\begin{pmatrix}
+Var\left(\mathbf{X}\right)  & Cov\left(\mathbf{X},\mathbf{Y}\right)  \\
+Cov\left(\mathbf{Y},\mathbf{X}\right)  & Var\left(\mathbf{Y}\right) 
+\end{pmatrix}$.\\\\
+We know that $Var(\mathbf{X})=\mathbf{\Sigma}$ and that $Var(\mathbf{Y})=\mathbf{\Sigma}+\mathbf{\Sigma}'$, so all we need to do is find $Cov\left(\mathbf{X},\mathbf{Y}\right)$ and $Cov\left(\mathbf{Y},\mathbf{X}\right)$.\\\\
+$Cov(\mathbf{X},\mathbf{Y})=E(Cov(\mathbf{X},\mathbf{Y})|\mathbf{X})+Cov(E(\mathbf{X}|X),E(\mathbf{Y}|\mathbf{X}))=\mathbf{0}+Cov(\mathbf{X},\mathbf{X})=Var(\mathbf{X})=\mathbf{\Sigma}$\\\\
+$Cov(\mathbf{Y},\mathbf{X})=E(Cov(\mathbf{Y},\mathbf{X})|\mathbf{X})+Cov(E(\mathbf{Y}|\mathbf{X}),E(\mathbf{X}|\mathbf{X}))=\mathbf{0}+Cov(\mathbf{X},\mathbf{X})=Var(\mathbf{X})=\mathbf{\Sigma}$\\\\
+Then, $\boldsymbol{\beta}=\begin{pmatrix}
+\mathbf{\Sigma}  & \mathbf{\Sigma}  \\
+\mathbf{\Sigma}  & \mathbf{\Sigma}+\mathbf{\Sigma}' 
+\end{pmatrix}$.\\\\
+Therefore, $(\mathbf{X},\mathbf{Y})^T\sim N((\boldsymbol{\mu},\boldsymbol{\mu})^T,\begin{pmatrix}
+\mathbf{\Sigma}  & \mathbf{\Sigma}  \\
+\mathbf{\Sigma}  & \mathbf{\Sigma}+\mathbf{\Sigma}' 
+\end{pmatrix})$.
+
+
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%% PROBLEM 4 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{I can Ei-gen}
+\begin{problem}
+    Let $\v X \in \R^{n \times m}$.
+    \begin{enumerate}[label=(\alph*)]
+        \item What is the relationship between the $n$ eigenvalues
+              of $\v X \v X^T$ and the $m$ eigenvalues of $\v X^T \v X$?
+        \item Suppose $\v X$ is square (i.e., $n=m$) and symmetric.
+              What does this tell you about the eigenvalues of $\v X$?
+              What are the eigenvalues of $\v X + \v I$, where $\v I$ is the identity matrix?
+        \item Suppose $\v X$ is square, symmetric, and invertible.
+			  What are the eigenvalues of $\v X^{-1}$?
+	\end{enumerate}
+	Hints:
+	\begin{itemize}
+		\item Make use of singular value decomposition and the properties
+			  of orthogonal matrices. Show your work.
+		\item Review and make use of (but do not derive) the spectral theorem.
+	\end{itemize}
+\end{problem}
+
+
+
+
+\textbf{(a)} Suppose $\lambda$ is a non-zero eigenvalue of $\mathbf{X}^{T}\mathbf{X}$ and is associated with eigenvector $\mathbf{a} \in \R^{m}$. Then \\$\mathbf{X}^{T}\mathbf{X}\mathbf{a}=\lambda \mathbf{a} \Rightarrow (\mathbf{XX}^{T})\mathbf{Xa}=\lambda \mathbf{Xa} \Rightarrow \mathbf{XX}^{T}$ also has $\lambda$ as an eigenvalue and it is associated with eigenvector $\mathbf{Xa}$. Since the choice of $\lambda$ was arbitrary, it follows that the non-zero eigenvalues of $\mathbf{X}^{T}\mathbf{X}$ and $\mathbf{XX}^{T}$ are the same.\\\\
+It follows that in the case that $n=m$, $\mathbf{X}^{T}\mathbf{X}$ and $\mathbf{XX}^{T}$ will have the same eigenvalues.\\\\
+If $n\neq m$, the larger of $\mathbf{X}^{T}\mathbf{X}$ and $\mathbf{XX}^{T}$ will have more eigenvalues with value $0$. This is because rank$(\mathbf{X}^{T}\mathbf{X})=$ rank$(\mathbf{XX}^{T}) \leq \min(n, m)$, and these ranks correspond to the maximum number of non-zero eigenvalues that $\mathbf{X}^{T}\mathbf{X}$ and $\mathbf{XX}^{T}$ can have $\Rightarrow \mathbf{X}^{T}\mathbf{X}$ has $m-n$ more eigenvalues with value 0 than $\mathbf{XX}^{T}$ has if $m>n$ or $n-m$ less eigenvalues with value 0 than $\mathbf{XX}^{T}$ has if $m<n$.\\\\\\
+
+
+%Suppose $\alpha$ is a non-zero eigenvalue of $\mathbf{XX}^{T}$ and is associated eigenvector $\mathbf{b} \in \R^{n}$. Then \\$\mathbf{XX}^{T}\mathbf{b}=\alpha \mathbf{b} \Rightarrow (\mathbf{X}^{T}\mathbf{X})\mathbf{X}^{T}\mathbf{b}=\alpha \mathbf{X}^{T}\mathbf{b} \Rightarrow \mathbf{X}^{T}\mathbf{X}$ also has $\alpha$ as an eigenvalue and it is associated with eigenvector $\mathbf{X}^{T}\mathbf{b}$. Since the choice of $\alpha$ was arbitrary, it follows that every non-zero eigenvalue that $\mathbf{XX}^{T}$ has $\mathbf{X}^{T}\mathbf{X}$ also has.\\%
+
+
+
+
+
+
+\textbf{(b)} The spectral theorem says that if $\mathbf{X}$ is a square, symmetric matrix, all the eigenvalues of $\mathbf{X}$ are real.\\\\
+Let $\lambda$ be an eigenvalue of $\mathbf{X}$ associated with eigenvector $\mathbf{a}$. For the eigenvalues of $\mathbf{X}+\mathbf{I}$, we start with $\mathbf{Xa}=\lambda\mathbf{a}\Rightarrow(\mathbf{X}+\mathbf{I})\mathbf{a}=(\lambda \mathbf{I} + \mathbf{I})\mathbf{a}\Rightarrow(\mathbf{X}+\mathbf{I})\mathbf{a}=(\lambda+1)\mathbf{a}$. Since the choice of $\lambda$ was arbitrary, it follows the eigenvalues of $\mathbf{X}+\mathbf{I}$ can be found by adding $1$ to each of the eigenvalues of $\mathbf{X}$.\\\\\\
+
+
+
+
+
+\textbf{(c)} Suppose $\lambda$ is an eigenvalue of $\mathbf{X} \in \R^{n \times n}$ ($\lambda$ must be non-zero since $\mathbf{X}$ is invertible) and is associated with eigenvector $\mathbf{a} \in \R^{n}$. Then $\mathbf{Xa}=\lambda \mathbf{a} \Rightarrow \mathbf{X}^{-1}\mathbf{Xa}=\lambda \mathbf{X}^{-1}\mathbf{a} \Rightarrow \mathbf{a}=\lambda \mathbf{X}^{-1}\mathbf{a} \Rightarrow \mathbf{X}^{-1}\mathbf{a}=\dfrac{1}{\lambda}\mathbf{a} \Rightarrow \mathbf{X}^{-1}$ has $\dfrac{1}{\lambda}$ as an eigenvalue and it is associated with eigenvector $\mathbf{a}$. Since the choice of $\lambda$ was arbitrary, it follows the eigenvalues of $\mathbf{X}$ and $\mathbf{X}^{-1}$ are reciprocals of each other.
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%% PROBLEM 5 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Vector Calculus}
+\begin{problem}
+  Let $\v x, \v y \in \R^m$ and $\v A \in \R^{m \times m}$. Please derive from
+  elementary scalar calculus the following useful properties. Write
+  your final answers in vector notation.
+\begin{enumerate}[label=(\alph*)]
+    \item What is the gradient with respect to $\v x$ of $\v x^T \v y$?
+    \item What is the gradient with respect to $\v x$ of $\v x^T \v x$?
+    \item What is the gradient with respect to $\v x$ of $\v x^T \v A \v x$?
+\end{enumerate}
+\end{problem}
+
+
+
+
+\textbf{(a)} \\
+
+$\dfrac {\partial}{\partial \mathbf{x}}\left(\mathbf{x}^{T}\mathbf{y}\right) =\dfrac {\partial}{\partial \mathbf{x}}\left( \displaystyle\sum^{m}_{i=1}x_{i}y_{i}\right) =\displaystyle\sum^{m}_{i=1}\dfrac {\partial x_{i}y_{i}}{\partial \mathbf{x}}=\displaystyle\sum^{m}_{i=1}\left[ \dfrac {\partial x_{i}y_{i}}{\partial x_{1}},\dfrac {\partial x_{i}y_{i}}{\partial x_{2}}\ldots\dfrac {\partial x_{i}y_{i}}{\partial x_{m}}\right] ^{T}=\left[ y_{1},y_{2}\ldots y_{m}\right] ^{T}=\mathbf{y}$\\\\\\
+
+
+
+\textbf{(b)} \\
+
+$\dfrac {\partial}{\partial \mathbf{x}}\left( \mathbf{x}^{T}\mathbf{x}\right) =\dfrac {\partial}{\partial \mathbf{x}}\left( \displaystyle\sum^{m}_{i=1}x^{2}_{i}\right) =\displaystyle\sum^{m}_{i=1}\dfrac {\partial x^{2}_{i}}{\partial \mathbf{x}}=\displaystyle\sum^{m}_{i=1}\left[ \dfrac {\partial x^{2}_{i}}{\partial x_{1}},\dfrac {\partial x^{2}_{i}}{\partial x_{2}}\ldots\dfrac {\partial x^{2}_{i}}{\partial x_{m}}\right] ^{T}=\left[ 2x_{1},2x_{2},\ldots2x_{m}\right] ^{T}=2\mathbf{x}$\\\\\\
+
+
+
+\textbf{(c)} \\
+
+$\dfrac {\partial}{\partial \mathbf{x}}\left( \mathbf{x}^{T}\mathbf{{Ax}}\right) =\dfrac {\partial}{\partial \mathbf{x}}\left( x_{1}\displaystyle\sum^{m}_{i=1}x_{i}a_{i1}+x_{2}\displaystyle\sum^{m}_{i=1}x_{i}a_{i2}+\ldots+x_{m}\displaystyle\sum^{m}_{i=1}x_{i}a_{im}\right)\\\\\\=\displaystyle\sum^{m}_{i=1}\dfrac {\partial x_{1}x_{i}a_{i1}}{\partial \mathbf{x}}+\ldots+\displaystyle\sum^{m}_{i=1}\dfrac {\partial x_{m}x_{i}a_{im}}{\partial \mathbf{x}}\\\\\\=\displaystyle\sum^{m}_{i=1}\left[ \dfrac {\partial x_{1}x_{i}a_{i1}}{\partial x_{1}}\ldots\dfrac {\partial x_{1}x_{i}a_{i1}}{\partial x_{m}}\right] ^{T}+\ldots+\displaystyle\sum^{m}_{i=1}\left[ \dfrac {\partial x_{m}x_{i}a_{im}}{\partial x_{1}}...\dfrac {\partial x_{m}x_{i}a_{im}}{\partial x_{m}}\right] ^{T}\\\\\\=\left[ 2x_{1}a_{11}+\displaystyle\sum^{m}_{i=2}x_{i}a_{i1},\ldots,x_{1}a_{m1}\right] ^{T}+\ldots+\left[ x_{m}a_{1m},\ldots,2x_{m}a_{mm}+\displaystyle\sum^{m-1}_{i=1}x_{i}a_{im}\right] ^{T}=\left( \mathbf{A}+\mathbf{A}^{T}\right)\mathbf{x}$\\\\\\
+We can see that this is true by doing a manual calculation using a small value for $m$.
+
+
+ 
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%% PROBLEM 7 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Gradient Check}
+\begin{problem}
+  Often after finishing an analytic derivation of a gradient, you will
+  need to implement it in code.  However, there may be mistakes -
+  either in the derivation or in the implementation. This is
+  particularly the case for gradients of multivariate functions.
+
+  \air
+
+  \noindent One way to check your work is to numerically estimate the gradient
+  and check it on a variety of inputs. For this problem we consider
+  the simplest case of a univariate function and its derivative.  For
+  example, consider a function $f(x): \mathbb{R} \to \mathbb{R}$:
+$$\frac{d f}{d x} = \underset{\epsilon \to 0} \lim \frac{f(x + \epsilon) - f(x - \epsilon)}{2 \epsilon}$$
+\noindent A common check is to evaluate the right-hand side for a small value of
+$\epsilon$, and check that the result is similar to your analytic
+result.\\
+
+\smallskip
+
+\noindent In this problem, you will implement the analytic and numerical derivatives of the function \[f(x) = \cos(x) + x^2 + e^x.\]
+
+\begin{enumerate}
+  \item Implement \texttt{f} in Python (feel free to use whatever \texttt{numpy} or \texttt{scipy} functions you need):
+  \begin{lstlisting}[language=python]
+  def f(x):
+
+  \end{lstlisting}
+  \item Analytically derive the derivative of that function, and implement it in Python:
+  \begin{lstlisting}[language=python]
+  def grad_f(x):
+
+  \end{lstlisting}
+  \item Now, implement a gradient check (the numerical approximation to the derivative), and by plotting, 
+        show that the numerical approximation approaches the analytic as \texttt{epsilon} 
+        $\to 0$ for a few values of $x$:
+  \begin{lstlisting}[language=python]
+  def grad_check(x, epsilon):
+
+  \end{lstlisting}
+\end{enumerate}
+\end{problem}
+$\dfrac{df}{dx}=-\sin{(x)} + 2x + e^{x}$\\\\
+The plots on the following page show that the numerical approximations of the gradient approach the analytic values of the gradient as $\epsilon \rightarrow 0$ for four values of $x$.
+
+\end{document}
