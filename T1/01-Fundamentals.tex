@@ -1,13 +1,12 @@
 \documentclass[submit]{harvardml}
 
 % Put in your full name and email address.
-\name{Your Name}
-\email{email@fas.harvard.edu}
+\name{Christopher Hase}
+\email{christopher\_hase@g.harvard.edu}
 
 % List any people you worked with.
 \collaborators{%
-  John Doe,
-  Fred Doe
+  None
 }
 
 % You don't need to change these.
@@ -20,6 +19,9 @@
 \usepackage{listings}
 \usepackage{bm}
 \usepackage{hyperref}
+\usepackage{bigints}
+\usepackage{amsmath}
+
 
 % Some useful macros.
 \newcommand{\given}{\,|\,}
@@ -52,6 +54,51 @@ f(x) = \frac{1}{\sqrt{2\pi}\sigma} \exp\left( -\frac{1}{2\sigma^2}(x - \mu)^2 \r
 \end{enumerate}
 \vspace{0.1cm}
 \end{problem}
+
+
+
+
+
+\textbf{(a)} Let $X\sim\N(0,\sigma_X^2)$, $Y\sim\N(0,\sigma_Y^2)$, and $Z=X+Y$. $f_Z(z)$ can be found by convolving $f_X(x)$ and $f_Y{(y)}$.\\\\
+$f_Z(z)=\displaystyle\bigintsss_{-\infty}^{\infty}f_X(x)f_Y{(z-x)}dx$\\\\\\
+$=\displaystyle\bigintsss_{-\infty}^{\infty}\displaystyle\dfrac{1}{\sqrt{2\pi\sigma_X^{2}}}\exp\Bigg(-\displaystyle\dfrac{1}{2\sigma_X^{2}}x^{2}\Bigg)\displaystyle\dfrac{1}{\sqrt{2\pi\sigma_Y^{2}}}\exp\Bigg(-\displaystyle\dfrac{1}{2\sigma_Y^{2}}(z-x)^{2}\Bigg)dx$\\\\\\
+
+\textbf{(b)} Continuing from (a):\\\\
+$=\displaystyle\dfrac{1}{\sqrt{2\pi(\sigma_X^{2}+\sigma_Y^{2})}}\displaystyle\bigint_{-\infty}^{\infty}\displaystyle\dfrac{1}{\sqrt{2\pi\Big(\frac{\sigma_X^{2}\sigma_Y^{2}}{\sigma_X^{2}+\sigma_Y^{2}}\Big)}}\exp\Bigg(-\displaystyle\dfrac{1}{2\sigma_X^{2}}x^{2}-\displaystyle\dfrac{1}{2\sigma_Y^{2}}(z-x)^{2}\Bigg)dx$\\\\\\
+We need to rearrange the expression in the exponent:\\\\
+$-\displaystyle\dfrac{1}{2\sigma_X^{2}}x^{2}-\displaystyle\dfrac{1}{2\sigma_Y^{2}}(z-x)^{2}$\\\\\\
+$=-\dfrac{1}{2}\Bigg(\dfrac{x^2}{\sigma_X^2}+\dfrac{z^2}{\sigma_Y^2}-\dfrac{2xz}{\sigma_Y^2}+\dfrac{x^2}{\sigma_Y^2}\Bigg)$\\\\\\
+$=-\dfrac{1}{2}\Bigg(\dfrac{x^2(\sigma_X^2+\sigma_Y^2)+z^2\sigma_X^2-2xz\sigma_X^2}{\sigma_X^2\sigma_Y^2}\Bigg)$\\\\\\
+$=-\dfrac{1}{2}\Bigg(\dfrac{x^2(\sigma_X^2+\sigma_Y^2)}{\sigma_X^2\sigma_Y^2}+\dfrac{z^2-2xz(\sigma_X^2+\sigma_Y^2)\sigma_X^2}{\sigma_X^2\sigma_Y^2(\sigma_X^2+\sigma_Y^2)}\Bigg)$\\\\\\
+$=-\dfrac{1}{2}\Bigg(\dfrac{z^2}{\sigma_X^2+\sigma_Y^2}+\dfrac{z^2\sigma_X^4-2xz(\sigma_X^2+\sigma_Y^2)\sigma_X^2}{\sigma_X^2\sigma_Y^2(\sigma_X^2+\sigma_Y^2)}+\dfrac{x^2(\sigma_X^2+\sigma_Y^2)}{\sigma_X^2\sigma_Y^2}\Bigg)$\\\\\\
+$=-\dfrac{1}{2}\Bigg(\dfrac{z^2}{\sigma_X^2+\sigma_Y^2}+\dfrac{\Big(\frac{z\sigma_X^2}{\sigma_X^2+\sigma_Y^2}\Big)^2-\frac{2xz\sigma_X^2}{\sigma_X^2+\sigma_Y^2}+x^2}{\frac{\sigma_X^2\sigma_Y^2}{\sigma_X^2+\sigma_Y^2}}\Bigg)$\\\\\\
+$=-\dfrac{z^2}{2(\sigma_X^2+\sigma_Y^2)}-\dfrac{\Big(x-\frac{z\sigma_X^2}{\sigma_X^2+\sigma_Y^2}\Big)^2}{2\Big(\frac{\sigma_X^2\sigma_Y^2}{\sigma_X^2+\sigma_Y^2}\Big)}$\\\\\\
+Plugging this into the exponent of the integral, we have:\\\\\\
+$=\displaystyle\dfrac{1}{\sqrt{2\pi(\sigma_X^{2}+\sigma_Y^{2})}}\displaystyle\bigint_{-\infty}^{\infty}\displaystyle\dfrac{1}{\sqrt{2\pi\Big(\frac{\sigma_X^{2}\sigma_Y^{2}}{\sigma_X^{2}+\sigma_Y^{2}}\Big)}}\exp\Bigg(-\dfrac{z^2}{2(\sigma_X^2+\sigma_Y^2)}-\dfrac{\Big(x-\frac{z\sigma_X^2}{\sigma_X^2+\sigma_Y^2}\Big)^2}{2\Big(\frac{\sigma_X^2\sigma_Y^2}{\sigma_X^2+\sigma_Y^2}\Big)}\Bigg)dx$\\\\\\
+$=\displaystyle\dfrac{1}{\sqrt{2\pi(\sigma_X^{2}+\sigma_Y^{2})}}\exp\Bigg(-\dfrac{z^2}{2(\sigma_X^2+\sigma_Y^2)}\Bigg)\displaystyle\bigint_{-\infty}^{\infty}\displaystyle\dfrac{1}{\sqrt{2\pi\Big(\frac{\sigma_X^{2}\sigma_Y^{2}}{\sigma_X^{2}+\sigma_Y^{2}}\Big)}}\exp\Bigg(-\dfrac{\Big(x-\frac{z\sigma_X^2}{\sigma_X^2+\sigma_Y^2}\Big)^2}{2\Big(\frac{\sigma_X^2\sigma_Y^2}{\sigma_X^2+\sigma_Y^2}\Big)}\Bigg)dx$\\\\\\
+$=\displaystyle\dfrac{1}{\sqrt{2\pi(\sigma_X^{2}+\sigma_Y^{2})}}\exp\Bigg(-\dfrac{z^2}{2(\sigma_X^2+\sigma_Y^2)}\Bigg)$\\\\\\
+$\Rightarrow Z\sim\N(0,\sigma_X^{2}+\sigma_Y^{2})$\\\\\\
+
+\textbf{(c)} Let $X\sim\N(0,\sigma_X^2)$, $Y\sim\N(0,\sigma_Y^2)$, $Z=X+Y$ so that $Z\sim\N(0,\sigma_X^2+\sigma_Y^2)$ (this is the result from (b)), $X'\sim\N(\mu_X,\sigma_X^2)$, and $Y'\sim\N(\mu_Y,\sigma_Y^2)$. We want to find the distribution of $Z'=X'+Y'$. First we'll show that $X'$ and $X+\mu_X$ have the same distribution.\\\\
+$f_{X'}(x)=\displaystyle\dfrac{1}{\sqrt{2\pi\sigma_X^{2}}}\exp\Bigg(-\displaystyle\dfrac{1}{2\sigma_X^{2}}(x-\mu_X)^{2}\Bigg)$\\\\\\
+$F_{X+\mu_X}(x)=P(X+\mu_X\leq x)=P(X\leq x-\mu_X)=F_{X}(x-\mu_X)$\\\\
+$\Rightarrow f_{X+\mu_X}(x)=f_{X}(x-\mu_X)=\displaystyle\dfrac{1}{\sqrt{2\pi\sigma_X^{2}}}\exp\Bigg(-\displaystyle\dfrac{1}{2\sigma_X^{2}}(x-\mu_X)^{2}\Bigg)$\\\\\\
+Thus, we can set $X'=X+\mu_X$. By the same argument, we can set $Y'=Y+\mu_Y$. Then $Z'=X+Y+\mu_X+\mu_Y=Z+\mu_X+\mu_Y$.\\\\
+$F_{Z'}(z)=P(Z'\leq z)=P(Z+\mu_X+\mu_Y\leq z)=P(Z\leq z-\mu_X-\mu_Y)=F_Z(z-\mu_X-\mu_Y)$\\\\
+$\Rightarrow f_{Z'}(z)=f_Z(z-\mu_x-\mu_Y)=\displaystyle\dfrac{1}{\sqrt{2\pi(\sigma_X^{2}+\sigma_Y^{2})}}\exp\Bigg(-\dfrac{(z-\mu_X-\mu_Y)^2}{2(\sigma_X^2+\sigma_Y^2)}\Bigg)$\\\\\\
+$\Rightarrow Z'\sim\N(\mu_X+\mu_Y,\sigma_X^{2}+\sigma_Y^{2})$\\\\\\
+
+\textbf{(d)} Let $X\sim\N(\mu, \sigma^2)$.\\\\
+$F_{e^X}(x)=P(e^X\leq x)=P\big(X\leq \ln(x)\big)=F_X\big(\ln(x)\big)$\\\\
+$\Rightarrow f_{e^X}(x)=\dfrac{1}{x}f_X\big(\ln(x)\big)=\dfrac{1}{x\sqrt{2\pi\sigma^2}}\exp\Bigg(-\dfrac{\big(\ln(x)-\mu\big)^2}{2\sigma^2}\Bigg)$\\\\\\
+$\Rightarrow e^X\sim$ Lognormal$(\mu, \sigma^2)$
+
+
+
+
+
+
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% PROBLEM 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,6 +124,68 @@ where $\lambda = \sigma^2 / \tau^2$. (You may employ standard conjugacy results 
 \end{enumerate}
 \vspace{0.1cm}
 \end{problem}
+
+
+
+
+
+\textbf{(a)} We showed in problem 4a of homework 0 that $X^TX$ and $XX^T$ have the same non-zero eigenvalues and that if $m>n$, $X^TX$ will have at least one zero-valued eigenvalue. Thus, if $m>n$, $X^TX$ is not invertible. Then $\hat w$ does not have a unique maximum likelihood solution (if $X^TX$ not invertible $\hat w$ cannot have the unique maximum likelihood solution $(X^TX)^{-1}X^TY$).\\\\\\\
+
+\textbf{(b)} By construction, $\forall$ $Y\in\R^n$ $\exists$ $\hat w\in\R^m$ such that $X\hat w=HY \Rightarrow$ Im$(H)\subseteq$ Im$(X)$. Also, $\hat Y\in$ Im$(X)$ and $\hat Y=HY$. Thus, if $H$ is an orthogonal projection matrix, it projects onto the column space of $X$ with $\hat Y$ being the projection of $Y$ by $H$ onto the column space of $X$. So all we need to show is that $H$ is an orthogonal projection matrix. To do this, we need to show $\mathbf{(1)}$ that multiplying a vector that is already in the column space of $H$ by $H$ yields the same vector and $\mathbf{(2)}$ that multiplying a vector that is perpendicular to the column space of $H$ by $H$ yields a $0$ vector.\\\\
+$\mathbf{(1)}$ $\hat Y$ is in the column space of $H$.\\\\
+$\hat Y=HY\Rightarrow H\hat Y=HHY$\\\\
+$\Rightarrow H\hat Y=X(X^TX)^{-1}(X^TX)(X^TX)^{-1}X^TY$\\\\
+$\Rightarrow H\hat Y=X(X^TX)^{-1}X^TY$\\\\
+$\Rightarrow H\hat Y=HY$\\\\
+$\Rightarrow H\hat Y=\hat Y$\\\\
+$\mathbf{(2)}$ By construction, $Y-\hat Y$ is perpendicular to the column space of $H$.\\\\
+$H(Y-\hat Y)=HY-H\hat Y=HY-\hat Y=0$.\\\\\\
+
+\textbf{(c)} $E(\hat w)=E\big((X^TX)^{-1}X^TY\big)$\\\\
+$=(X^TX)^{-1}X^TE(Y)$\\\\
+$=(X^TX)^{-1}(X^TX)w$\\\\
+$=w$\\\\
+Var$(\hat w)=E\Big(\big((X^TX)^{-1}X^TY\big)\big((X^TX)^{-1}X^TY\big)^T\Big)-E\Big((X^TX)^{-1}X^TY\Big)E\Big(\big((X^TX)^{-1}X^TY\big)^T\Big)$\\\\
+$=(X^TX)^{-1}X^TE(YY^T)X(X^TX)^{-T}-(X^TX)^{-1}X^TE(Y)E(Y^T)X(X^TX)^{-T}$\\\\
+$=(X^TX)^{-1}X^T\big(E(YY^T-E(Y)E(Y^T)\big)X(X^TX)^{-T}$\\\\
+$=\sigma^2(X^TX)^{-1}(X^TX)(X^TX)^{-T}$\\\\
+$=\sigma^2(X^TX)^{-1}$\\\\\\
+
+\textbf{(d)} $p(Y)=\dfrac{1}{\sqrt{|2\pi\sigma^2I|}}\exp\Bigg(-\dfrac{1}{2\sigma^2}(Y-Xw)^T(Y-Xw)\Bigg)$\\\\\\
+$\Rightarrow \ln\big(p(y)\big)=-\ln\big(\sqrt{|2\pi\sigma^2I|}\big)-\dfrac{1}{2\sigma^2}(Y-Xw)^T(Y-Xw)$\\\\
+$=-\ln\big(\sqrt{|2\pi\sigma^2I|}\big)-\dfrac{1}{2\sigma^2}(Y^TY-2w^TX^TY+w^TX^TXw)$\\\\
+$\Rightarrow \dfrac{d\Big(\ln\big(p(y)\big)\Big)}{dw}=-\dfrac{1}{2\sigma^2}(-2X^TY+2X^TXw)$\\\\
+$=\dfrac{X^TY-X^TXw}{\sigma^2}$\\\\\\
+
+\textbf{(e)} $\underset{w}{\operatorname{argmax}}$ $p(w|Y)=\underset{w}{\operatorname{argmax}}$ $p(Y|w)p(w)$\\\\
+$=\underset{w}{\operatorname{argmax}}$ $\dfrac{1}{\sqrt{|2\pi\sigma^2I|}}\exp\Bigg(-\dfrac{1}{2\sigma^2}(Y-Xw)^T(Y-Xw)\Bigg)\dfrac{1}{\sqrt{|2\pi\tau^2I|}}\exp\Bigg(-\dfrac{1}{2\tau^2}w^Tw\Bigg)$\\\\\\
+$=\underset{w}{\operatorname{argmax}}$ $-\ln\big(\sqrt{|2\pi\sigma^2I|}\big)-\ln\big(\sqrt{|2\pi\tau^2I|}\big)+\dfrac{-Y^TY+2w^TX^TY-w^TX^TXw}{2\sigma^2}-\dfrac{w^Tw}{2\tau^2}$\\\\\\
+$=\underset{w}{\operatorname{argmax}}$ $\dfrac{2w^TX^TY-w^TX^TXw}{2\sigma^2}-\dfrac{w^Tw}{2\tau^2}$\\\\\\
+$\dfrac{d\Big(\ln\big(p(Y|w)p(w)\big)\Big)}{dw}=\dfrac{X^TY-X^TX\hat w}{\sigma^2}-\dfrac{\hat w}{\tau^2}\equiv0$\\\\\\
+$\Rightarrow\Bigg(\dfrac{X^TX}{\sigma^2}+\dfrac{1}{\tau^2}I\Bigg)\hat w=\dfrac{X^TY}{\sigma^2}$\\\\\\
+$\Rightarrow\Bigg(X^TX+\dfrac{\sigma^2}{\tau^2}I\Bigg)\hat w=X^TY$\\\\\\
+$\Rightarrow\hat w_{MAP}=\Bigg(X^TX+\dfrac{\sigma^2}{\tau^2}I\Bigg)^{-1}X^TY$\\\\\\
+$\Rightarrow\hat w_{MAP}=\Big(X^TX+\lambda I\Big)^{-1}X^TY$ where $\lambda=\dfrac{\sigma^2}{\tau^2}$\\\\\\
+
+\textbf{(f)} We do not need $n\geq m$ to do ridge regression. $X^TX$ is positive semi-definite, so its eigenvalues are $\geq 0$. Let $\gamma$ be an eigenvalue of $X^TX$ associated with vector $a$.\\\\
+$X^TXa=\gamma a$\\\\
+$\Rightarrow X^TXa+\lambda a=\gamma a+\lambda a$ where $\lambda=\dfrac{\sigma^2}{\tau^2}$ as in (e) $\Rightarrow\lambda>0$\\\\
+$\Rightarrow (X^TX+\lambda I)a=(\gamma+\lambda)a$ where $(\gamma+\lambda)>0$ since $\gamma\geq0$ and $\lambda>0$\\\\
+Then all of the eigenvalues of $(X^TX+\lambda I)$ are positive, so $(X^TX+\lambda I)^{-1}$ exists. Then under the conditions set in this problem excluding that $n\geq m$, $\hat w_{MAP}$ always has the unique solution $\big(X^TX+\lambda I\big)^{-1}X^TY$.\\\\\\
+
+\textbf{(g)} Let $X$ be the original matrix and $X_{r}\in\R^{(n+m)\times m}$ be the newly constructed matrix. Let $Y$ be the original vector and $Y_r\in\R^{n+m}$ be the newly constructed vector. Using the formula in the problem, we know that the maximum likelihood solution using both the newly constructed matrix and vector is:\\\\
+$\hat w=(X_r^TX_r)^{-1}X_r^TY_r$\\\\
+$X_r^TX_r$ is an $m\times m$ matrix with $x_{i}^Tx_{i}+\lambda$ as the $i$th diagonal entry $\forall$ $i\in\{1,...,m\}$ where $x_{i}$ is the $i$th column of $X$. $X^TX$ is the same as $X_r^TX_r$ everywhere but the diagonal where $X^TX$ has $x_i^Tx_i$ as its $i$th diagonal entry $\forall$ $i\in\{1,...,m\}$. Then $X_r^TX_r=X^TX+\lambda I$.\\\\
+$X_r^TY_r$ is an $m$-dimensional vector with $x_i^TY$ as its $i$th entry $\forall$ $i\in\{1,...,m\}$ where $x_i$ is the $i$th column of $X$. Then $X_r^TY_r=X^TY$.\\\\
+Plugging in $X^TX+\lambda I$ for $X_r^TX_r$ and $X^TY$ for $X_r^TY_r$ in the maximum likelihood solution using both the newly constructed matrix and vector gives us:\\\\
+$\hat w=\Big(X^TX+\lambda I\Big)^{-1}X^TY$, which is the ridge regression solution for $w$.
+
+
+
+
+
+
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% PROBLEM 3 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,6 +208,48 @@ where for all $k$, $\alpha_{k}^{(n)} = \alpha_k + \sum_{i=1}^{n-1} \indicator\{X
 \end{enumerate}
 \vspace{0.1cm}
 \end{problem}
+
+
+
+
+
+\textbf{(a)} $E(\theta)=\dfrac{\alpha}{\sum_{i=1}^{K}\alpha_i}$\\\\\\
+
+\textbf{(b)} Let $X\in\R^{K}$ be a one-hot encoded random vector such that $X_i=1$ if the $i$th side of the die shows and $X_i=0$ otherwise.\\\\
+$p(\theta|X=x)\propto P(X=x|\theta)p(\theta)$\\\\
+$=\displaystyle\prod_{i=1}^{K}\theta_i^{x_i}\dfrac{\Gamma\Big(\sum_{j=1}^{K}\alpha_j\Big)}{\prod_{j=1}^{K}\Gamma(\alpha_j)}\displaystyle\prod_{l=1}^{K}\theta_l^{\alpha_l-1}\\\\\\
+\propto\displaystyle\prod_{i=1}^{K}\theta_l^{\alpha_i+x_i-1}$\\\\\\
+$\Rightarrow \theta|X=x\sim$ Dir$(\alpha+x)$ since the final expression has the form of the Dirichlet distribution (unnormalized).\\\\\\
+
+\textbf{(c)} Let $X^{(i)}$ be a $K$-dimensional random vector distributed categorically with parameter $\theta$ that is one-hot encoded such that $X_j^{(i)}=1$ if the $j$th side of the die shows and $X_j^{(i)}=0$ otherwise $\forall$ $i\in\{1,...,n-1\}$. Let $X$ be a $K\times(n-1)$ random matrix where $X^{(i)}\in\R^{K}$ is the $i$th column $\forall$ $i\in\{1,...,n-1\}$ and $X_j\in\R^{1\times(n-1)}$ is the $j$th row $\forall$ $j\in\{1,...,K\}$.\\\\
+$p(\theta|X=x)\propto P(X=x|\theta)p(\theta)$\\\\
+$=\displaystyle\prod_{i=1}^{n-1}\displaystyle\prod_{j=1}^{K}\theta_j^{x_j^{(i)}}\dfrac{\Gamma\Big(\sum_{l=1}^{K}\alpha_l\Big)}{\prod_{l=1}^{K}\Gamma(\alpha_l)}\displaystyle\prod_{m=1}^{K}\theta_m^{\alpha_m-1}$\\\\\\
+$\propto\displaystyle\prod_{j=1}^{K}\theta_j^{\sum_{i=1}^{n-1}x_j^{(i)}+\alpha_j-1}$\\\\\\
+$\Rightarrow \theta|X=x\sim$ Dir$(\alpha+x\mathbf{1})$ where $\mathbf{1}$ is an $(n-1)$-dimensional vector with each of its entries being $1$.\\\\
+This gives is a similar result to the one obtained in part (b) for the posterior. We will use this result to get the posterior predictive $P(X_j^{(n)}=1|X=x)$.\\\\
+$P(X_j^{(n)}=1|X=x)=E(X_j^{(n)}|X=x)=E\big(E(X_j^{(n)}|\theta,X=x)|X=x\big)=E\big(E(X_j^{(n)}|\theta)|X=x\big)$\\\\
+$=E(\theta_j|X=x)=\dfrac{\alpha_j+x_j\mathbf{1}}{\sum_{i=1}^{K}\alpha_i+x_i\mathbf{1}}$ (this step comes from the result for part (a))\\\\\\
+$=\dfrac{\alpha_j+x_j\mathbf{1}}{\sum_{i=1}^{K}\alpha_i+n-1}=\dfrac{\alpha^{(n)}_{j}}{\sum_{i=1}^{K} \alpha^{(n)}_{i}}$\\\\\\
+
+\textbf{(d)} Let $Z=[Z_1,...,Z_K]^T$.\\\\
+$E(Z_k)=E\Bigg(\lim_{n \rightarrow \infty} \dfrac{1}{n}\displaystyle\sum_{i=1}^nX_k^{(i)}\Bigg)$\\\\\\
+$=\lim_{n \rightarrow \infty} \dfrac{1}{n}\displaystyle\sum_{i=1}^nE\Big(X_k^{(i)}\Big)$\\\\\\
+$=\lim_{n \rightarrow \infty} \dfrac{1}{n}n\theta_k=\theta_k$ $\forall$ $k\in\{1,...,K\}$\\\\
+Thus, $E(Z)=\theta$. By the law of large numbers, after infinitely many trials, the proportion of times that the $k$th side of the $K$-sided die shows up will converge to $\theta_k$ $\forall$ $k\in\{1,...,K\}$. This implies that $Z_k$ will have the same distribution as $\theta_k$ and $Z$ will have the same distrubtion as $\big[\theta_1,...,\theta_K\big]^T$. Since $\big[\theta_1,...,\theta_K\big]^T\sim$ Dir$(\alpha)$, $Z\sim$ Dir$(\alpha)$.\\\\
+The marginal distribution of a single class $Z_k$ is Beta$\Bigg(\alpha_k,\displaystyle\sum_{i=1}^{K}\alpha_i-\alpha_k\Bigg)$. We can show this by decomposing the Dirichlet PDF $p(z)$. Note that we can write the density of $Z$ in terms of $(K-1)$ of $Z_1,...,Z_K$ since $\sum_{i=1}^{K}Z_i=1$. Without loss of generality, suppose we choose to write the joint density of $Z_1,...,Z_K$ in terms of $Z_1,...,Z_{K-1}$ with $Z_K=1-\sum_{i=1}^{K-1}Z_i$ and find the marginal distribution of $Z_1$. Then we can write $p(z)=p(z_1)p(z_2|z_1)p(z_3|z_1,z_2)...p(z_{K-1}|z_1,...z_{K-2})$ where $p(z_1)$ is a beta PDF parametrized by $\alpha_1$ and $\sum_{i=1}^{K}\alpha_i-\alpha_1$.\\\\
+For purposes of demonstration, let $K=3$. We choose to write the joint density of $Z_1,Z_2,Z_3$ in terms of $Z_1$ and $Z_2$ with $Z_3=1-Z_1-Z_2$ and find the marginal distribution $Z_1$.\\\\
+$p(z)=\dfrac{\Gamma\Big(\sum_{j=1}^{3}\alpha_j\Big)}{\prod_{j=1}^{3}\Gamma(\alpha_j)}z_1^{\alpha_1-1}z_2^{\alpha_2-1}(1-z_1-z_2)^{\sum_{j=1}^{3}\alpha_j-\alpha_1-\alpha_2-1}$\\\\\\
+$=\Bigg(\dfrac{\Gamma\big(\alpha_1+\sum_{j=1}^{3}\alpha_j-\alpha_1\big)}{\Gamma(\alpha_1)\Gamma\big(\sum_{j=1}^{3}\alpha_j-\alpha_1\big)}z_1^{\alpha_1-1}(1-z_1)^{\sum_{j=1}^{3}\alpha_j-\alpha_1-1}\Bigg)\Bigg(\dfrac{\Gamma\big(\sum_{j=1}^{3}\alpha_j-\alpha_1\big)}{\Gamma(\alpha_2)\Gamma\big(\sum_{j=1}^{3}\alpha_j-\alpha_1-\alpha_2\big)}\dfrac{z_2^{\alpha_2-1}(1-z_1-z_2)^{\sum_{j=1}^{3}\alpha_j-\alpha_1-\alpha_2-1}}{(1-z_1)^{\sum_{j=1}^{3}\alpha_j-\alpha_1-1}}\Bigg)$\\\\\\
+$=p(z_1)p(z_2|z_1)\Rightarrow Z_1\sim$ Beta$\Bigg(\alpha_1,\displaystyle\sum_{i=1}^{3}\alpha_i-\alpha_1\Bigg)$\\\\\\
+
+\textbf{(e)} %$\lim_{n\rightarrow\infty}\rho_k^{(n)}=\lim_{n\rightarrow\infty}\dfrac{1}{\sum_{i=1}^{K}\alpha_i+n}\Bigg(\alpha_k+\displaystyle\sum_{i=1}^{n}X_k^{(i)}\Bigg)$\\\\\\
+%$=\lim_{n\rightarrow\infty}\dfrac{\alpha_k}{\sum_{i=1}^{K}\alpha_i+n}+\lim_{n\rightarrow\infty}\dfrac{1}{\sum_{i=1}^{K}\alpha_i+n}\displaystyle\sum_{i=1}^nX_k^{(i)}=\lim_{n\rightarrow\infty}\dfrac{1}{\sum_{i=1}^{K}\alpha_i+n}\displaystyle\sum_{i=1}^nX_k^{(i)}$\\\\\\
+%This tells us that the original number of balls of color k will contribute minimally to the overall proportion of balls that are color k after infinitely many trials. Then we have $\lim_{n\rightarrow\infty}\rho_k^{(n)}=Z_k=\lim_{n\rightarrow\infty}\dfrac{1}{n}\displaystyle\sum_{i=1}^nX_k^{(i)}$. As shown in part (d), $E(Z_k)=\theta_k$. Thus, $E\Big(\lim_{n\rightarrow\infty}\rho_k^{(n)}\Big)=\theta_k$. By the law of large numbers, after infinitely many trials, the proportion of times that the $k$th side of the $K$-sided die shows up will be $\theta_k$. Thus, $Z_k=\theta_k$, implying that $\lim_{n\rightarrow\infty}\rho_k^{(n)}=\theta_k$. Then, since $\theta_k\sim$ Beta$\Bigg(\alpha_k,\displaystyle\sum_{i=1}^{K}\alpha_i-\alpha_k\Bigg)$ (this was shown to be true in part (d)), $\lim_{n\rightarrow\infty}\rho_k^{(n)}\sim$ Beta$\Bigg(\alpha_k,\displaystyle\sum_{i=1}^{K}\alpha_i-\alpha_k\Bigg)$.
+Although we update our knowledge about the balls in the urn after each time-step, at time $0$ the only information we have is the original set of balls. When we take the perspective of being at time $0$, we have no reason to think that the fraction of all the balls that are of color $k$ at any time $n$ will not be approximately the same as the fraction of all the balls that are of color $k$ at time $0$. Thus, we would think that $\lim_{n\rightarrow\infty}\rho_k^{(n)}$ has the same distribution as $\theta_k$. We showed in part (d) that $\theta_k\sim$ Beta$\Bigg(\alpha_k,\displaystyle\sum_{i=1}^{K}\alpha_i-\alpha_k\Bigg)$. Then $\lim_{n\rightarrow\infty}\rho_k^{(n)}\sim$ Beta$\Bigg(\alpha_k,\displaystyle\sum_{i=1}^{K}\alpha_i-\alpha_k\Bigg)$.
+
+
+
+
 
 
 \newpage
@@ -169,6 +320,21 @@ training data
 \end{itemize}
 \vspace{0.1cm}
 \end{problem}
+
+
+
+
+
+
+$\hat{\mathbf{w}}=[7.74153395,5.55782079,2.25190765,1.07880135,-5.91177796,-1.73480336,-1.63875478,-0.26610556,$\\\\
+$0.81781409,-0.65913397]^T$ with the first value in the vector as the bias.\\\\\\
+Normalized test set RMSE $=5.20880461$
+
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% PROBLEM 5 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -246,6 +412,21 @@ into the land of autograd and check your computation with PyTorch's
 \vspace{0.1cm}
 
 \end{problem}
+
+
+
+
+
+
+$\hat{\mathbf{w}}=[7.74153376,5.55782127,2.25190735,1.07880151,-5.91177797,-1.73480356,-1.63875508,-0.2661055,$\\\\
+$0.81781411,-0.65913397]^T$ with the first value in the vector as the bias.\\\\\\
+Normalized test set RMSE $=5.20880461$
+
+
+
+
+
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% PROBLEM 6 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
