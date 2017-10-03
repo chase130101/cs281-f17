@@ -37,9 +37,9 @@ from torchtext import data, datasets, vocab
 # word_str = text_field.vocab.itos[word_id]
 # word_id = text_field.vocab.stoi[word_id]
 
-def load_imdb(imdb_path='imdb.zip', imdb_dir='imdb', batch_size=1, gpu=False,
-        reuse=False, repeat=False, shuffle=True):
-    print "Loading Data"
+def load_imdb(imdb_path='imdb.zip', imdb_dir='imdb', batch_size=1, gpu=True,
+        reuse=True, repeat=False, shuffle=True):
+    print("Loading Data")
     if (not reuse) or (not os.path.exists(imdb_dir)):
         f = zipfile.ZipFile(imdb_path, 'r')
         f.extractall('.')
