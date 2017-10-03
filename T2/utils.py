@@ -55,7 +55,7 @@ def load_imdb(imdb_path='imdb.zip', imdb_dir='imdb', batch_size=1, gpu=True,
             (train, val, test), batch_size=batch_size, device=DEV, repeat=repeat,
             shuffle=shuffle)
 
-    text_field.build_vocab(train, vectors=vocab.GloVe(name='6B', dim=300))
+    text_field.build_vocab((train, vectors=vocab.GloVe(name='6B', dim=300))
     label_field.build_vocab(train)
     print (label_field.vocab.stoi['pos'])
     print (label_field.vocab.stoi['neg'])
