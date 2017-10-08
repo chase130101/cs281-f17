@@ -37,7 +37,7 @@ from torchtext import data, datasets, vocab
 # word_str = text_field.vocab.itos[word_id]
 # word_id = text_field.vocab.stoi[word_id]
 
-def load_imdb(imdb_path='imdb.zip', imdb_dir='imdb', batch_size=1, gpu=False,
+def load_imdbCPU(imdb_path='imdb.zip', imdb_dir='imdb', batch_size=1, gpu=False,
         reuse=False, repeat=False, shuffle=True):
     #print("Loading Data")
     if (not reuse) or (not os.path.exists(imdb_dir)):
@@ -69,10 +69,10 @@ def load_imdb(imdb_path='imdb.zip', imdb_dir='imdb', batch_size=1, gpu=False,
 #### Returns
 # -x: A Variable of size (batch_size, V) storing the word counts. x[b][word_id]
 #  stores the number of occurrences of word_id in the b-th example in the batch
-def bag_of_words(batch, text_field):
+def bag_of_wordsCPU(batch, text_field):
     V = len(text_field.vocab)
-    x = torch.zeros(batch.text[0].size(0), V).cuda()
-    ones = torch.ones(batch.text[0].size(1)).cuda()
+    x = torch.zeros(batch.text[0].size(0), V)
+    ones = torch.ones(batch.text[0].size(1))
     for b in range(batch.text[0].size(0)):
         x[b].index_add_(0, batch.text[0].data[b], ones)
         x[b][text_field.vocab.stoi['<pad>']] = 0
