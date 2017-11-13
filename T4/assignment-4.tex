@@ -1,16 +1,15 @@
-\documentclass{harvardml}
+\documentclass[submit]{harvardml}
 
 
 \usepackage{url}
 
 % Put in your full name and email address.
-\name{Your Name}
-\email{email@fas.harvard.edu}
+\name{Christopher Hase}
+\email{christopher\_hase@g.harvard.edu}
 
 % List any people you worked with.
 \collaborators{%
-  John Doe,
-  Fred Doe
+None
 }
 
 \course{CS281-F17}
@@ -32,6 +31,8 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usetikzlibrary{bayesnet}
+\usepackage{enumitem}
+\usepackage{bm}
 
 % Some useful macros.
 \newcommand{\R}{\mathbb{R}}
@@ -108,7 +109,6 @@ is ``close'' to green and green is close to blue, but red is not close
 to blue. This is not supposed to be physically true, just part of the problem.]
 
 \newpage
-
 \begin{problem}[Variational Inference for Denoising, 30pts]
 
 \noindent For the problems below we have provided a set of example images in
@@ -162,8 +162,44 @@ each node of the graph, derive local mean field updates.
 \end{enumerate}
 \end{problem}
 
-\newpage
 
+
+\begin{enumerate}[label=1.\arabic*.]
+\item These are the posterior marginals for $y_{ij}=1$ $\forall$ $i,j$ for the small image:
+\begin{verbatim}
+[[ 1.          1.          1.        ]
+ [ 0.99999998  1.          0.99999998]
+ [ 0.00252378  0.00248464  0.00252378]]
+\end{verbatim}
+These are the posterior marginals for $y_{ij}=2$ $\forall$ $i,j$ for the small image:
+\begin{verbatim}
+[[  5.79905571e-12   1.95516261e-15   5.79905571e-12]
+ [  1.51930154e-08   6.56942344e-12   1.51930154e-08]
+ [  9.97476218e-01   9.97515359e-01   9.97476218e-01]]
+\end{verbatim}
+Note that there are some issues with rounding here.
+\item Let $l$ be the epoch number. I am assuming we have $K=3$ colors for this part. We use a mean-field factorization to approximate the joint posterior $p(\mathbf{y}|\mathbf{x})$, and the mean field updates can be written as:\\\\
+$q^{(l+1)}_{ij}(y_{ij})=\dfrac{\exp\bigg(\theta(y_{ij})+\displaystyle\sum_{n\in\textrm{nbr}_{ij}}\theta(y_{ij},1)q^{(l)}_n(1)+\theta(y_{ij},2)q^{(l)}_n(2)+\theta(y_{ij},3)q^{(l)}_n(3)\bigg)}{\displaystyle\sum_{k=1}^3\exp\bigg(\theta(k)+\displaystyle\sum_{n\in\textrm{nbr}_{ij}}\theta(k,1)q^{(l)}_n(1)+\theta(k,2)q^{(l)}_n(2)+\theta(k,3)q^{(l)}_n(3)\bigg)}$\\\\\\
+We need to make this update $\forall$ $y_{ij}\in\{1,2,3\}$ and $\forall$ $i,j$.\\
+\item For the comparison of the denoised images to the originals, see the next page.\\\\ 
+Here are the variational values for the posterior marginals for $y_{ij}=1$ $\forall$ $i,j$ for the small image:
+\begin{verbatim}
+[[  1.00000000e+00   1.00000000e+00   1.00000000e+00]
+ [  9.99999985e-01   1.00000000e+00   9.99999985e-01]
+ [  4.53978686e-05   1.52521210e-08   4.53978686e-05]]
+\end{verbatim}
+Here are the variational values for the posterior marginals for $y_{ij}=2$ $\forall$ $i,j$ for the small image:
+\begin{verbatim}
+[[  5.10909027e-12   1.71390843e-15   5.10909027e-12]
+ [  1.52189208e-08   5.10909027e-12   1.52189208e-08]
+ [  9.99954600e-01   9.99999985e-01   9.99954600e-01]]
+\end{verbatim}
+Note that there are some issues with rounding here. The the variational values are close to the exact marginals.
+\end{enumerate}
+
+
+
+\newpage
 \section*{Modeling users and jokes with a Bayesian latent bilinear model}
 
 The next two questions will develop Bayesian inference methods for the simplest version of the latent bilinear model you used to model jokes ratings in HW3. The data set we'll use is the same as in HW3, a modified and preprocessed variant of the Jester data set. However, to make things easier (and to make being Bayesian more worthwhile) {\bf we'll only use subsampling to 10\% of the training data}.  The other ratings will form your test set.
@@ -229,13 +265,79 @@ The lower bound is the sum of entropy, prior and likelihood terms, while the tra
 
 \item Fit your variational model for $K = 1$ to $K = 10$, and plot the training-set log-likelihood, test-set log-likelihood, and lower bound for each value of $K$.
 How do the shapes of these curves differ?
-
-
-
 \end{enumerate}
 \end{problem}
 
 
+
+\begin{enumerate}[label=2.\arabic*.]
+\item $X\sim\N(\mu,\sigma^2)$ has PDF $p$.\\
+$q$ is a univariate Gaussian PDF parameterized by mean $\theta$ and variance $\tau^2$.\\\\
+$KL(p||q)=\displaystyle\int_{-\infty}^\infty\log\bigg(\dfrac{p(x)}{q(x)}\bigg)p(x)dx$\\\\\\
+$=\displaystyle\int_{-\infty}^\infty\log\big(p(x)\big)p(x)dx-\displaystyle\int_{-\infty}^\infty\log\big(q(x)\big)p(x)dx$\\\\\\
+Focusing on the first term for now, we have:\\\\
+$\displaystyle\int_{-\infty}^\infty\log\big(p(x)\big)p(x)dx=\displaystyle\int_{-\infty}^\infty\log\Bigg(\dfrac{1}{\sqrt{2\pi\sigma^2}}\exp\bigg(-\dfrac{1}{2\sigma^2}(x-\mu)^2\bigg)\Bigg)p(x)dx$\\\\\\
+$=-\dfrac{1}{2}\log(2\pi\sigma^2)-\dfrac{1}{2\sigma^2}\displaystyle\int_{-\infty}^\infty(x^2-2x\mu+\mu^2)p(x)dx$\\\\\\
+$=-\dfrac{1}{2}\log(2\pi\sigma^2)-\dfrac{E(X^2)-2\mu E(X)+\mu^2}{2\sigma^2}$\\\\\\
+$=-\dfrac{1}{2}\log(2\pi\sigma^2)-\dfrac{\sigma^2+\mu^2-2\mu^2+\mu^2}{2\sigma^2}$\\\\\\
+$=-\dfrac{1}{2}\log(2\pi\sigma^2)-\dfrac{1}{2}$\\\\\\
+Now we focus on the second term:\\\\
+$\displaystyle\int_{-\infty}^\infty\log\big(q(x)\big)p(x)dx=\displaystyle\int_{-\infty}^\infty\log\Bigg(\dfrac{1}{\sqrt{2\pi\tau^2}}\exp\bigg(-\dfrac{1}{2\tau^2}(x-\theta)^2\bigg)\Bigg)p(x)dx$\\\\\\
+$=-\dfrac{1}{2}\log(2\pi\tau^2)-\dfrac{1}{2\tau^2}\displaystyle\int_{-\infty}^\infty(x^2-2x\theta+\theta^2)p(x)dx$\\\\\\
+$=-\dfrac{1}{2}\log(2\pi\tau^2)-\dfrac{E(X^2)-2\theta E(X)+\theta^2}{2\tau^2}$\\\\\\
+$=-\dfrac{1}{2}\log(2\pi\tau^2)-\dfrac{\sigma^2+\mu^2-2\theta\mu+\theta^2}{2\tau^2}$\\\\\\
+$=-\dfrac{1}{2}\log(2\pi\tau^2)-\dfrac{\sigma^2+(\mu-\theta)^2}{2\tau^2}$\\\\\\
+Putting the two terms together, we have:\\\\
+$KL(p||q)=-\dfrac{1}{2}\log(2\pi\sigma^2)-\dfrac{1}{2}+\dfrac{1}{2}\log(2\pi\tau^2)+\dfrac{\sigma^2+(\mu-\theta)^2}{2\tau^2}$\\\\\\
+$=\dfrac{1}{2}\Bigg(\log\bigg(\dfrac{\tau^2}{\sigma^2}\bigg)+\dfrac{\sigma^2+(\mu-\theta)^2}{\tau^2}-1\Bigg)$
+\item Let $N$ be the number of users.\\
+Let $M$ be the number of jokes.\\
+Let $K$ be the number of latent parameters for each user/joke.\\
+Let $B$ be the set of all (user, joke) pairs in the training data for which there are ratings. Then $|B|$ is the number of ratings in the training data.\\
+Let $U\in\R^{N\times K}$ be the random latent parameter matrix for the users.\\
+Let $V\in\R^{M\times K}$ be the random latent parameter matrix for the jokes.\\
+$q_{U_{ik}}$ is a univariate Gaussian PDF parameterized by mean $\lambda_{ik}^{(\mu U)}$ and variance $\lambda_{ik}^{(\sigma^2U)}$ $\forall$ $i,k$. These are our approximations to the posteriors of the entries in $U$.\\
+$q_{V_{jk}}$ is a univariate Gaussian PDF parameterized by mean $\lambda_{jk}^{(\mu V)}$ and variance $\lambda_{ik}^{(\sigma^2V)}$ $\forall$ $j,k$. These are our approximations to the posteriors of the entries in $V$.\\
+$p_{U_{ik}}$ is a univariate Gaussian PDF parameterized by mean $0$ and variance $\sigma_U^2$ $\forall$ $i,k$. These are the priors of the entries in $U$.\\
+$p_{V_{jk}}$ is a univariate Gaussian PDF parameterized by mean $0$ and variance $\sigma_V^2$ $\forall$ $j,k$. These are the priors of the entries in $V$.\\\\
+Let $\bm{\lambda}$ be the set of all variational parameters.\\\\
+$q_U(U)=\displaystyle\prod_{i=1}^N\displaystyle\prod_{k=1}^Kq_{U_{ik}}(U_{ik})$\\\\
+$p_U(U)=\displaystyle\prod_{i=1}^N\displaystyle\prod_{k=1}^Kp_{U_{ik}}(U_{ik})$\\\\
+$q_V(V)=\displaystyle\prod_{j=1}^M\displaystyle\prod_{k=1}^Kq_{V_{jk}}(V_{jk})$\\\\
+$p_V(V)=\displaystyle\prod_{j=1}^M\displaystyle\prod_{k=1}^Kp_{V_{jk}}(V_{jk})$\\\\
+$q_{UV}(U,V)=q_{U}(U)\cdot q_{V}(V)$\\\\
+$p_{UV}(U,V)=p_{U}(U)\cdot p_{V}(V)$\\\\
+We want to simplify the first two terms in the variational objective $\mathcal{L}(\bm{\lambda})$.\\\\
+$KL\big(q_{U}(U)||p_{U}(U)\big)=E_{q_{U}}\Bigg(\log\bigg(\dfrac{q_{U}(U)}{p_{U}(U)}\bigg)\Bigg)$\\\\\\
+$=E_{q_{U}}\Bigg(\log\Bigg(\dfrac{\prod_{i=1}^N\prod_{k=1}^Kq_{U_{ik}}(U_{ik})}{\prod_{i=1}^N\prod_{k=1}^Kp_{U_{ik}}(U_{ik})}\Bigg)\Bigg)$\\\\\\
+$=\displaystyle\sum_{i=1}^N\displaystyle\sum_{k=1}^KE_{q_{U_{ik}}}\Bigg(\log\bigg(\dfrac{q_{U_{ik}}(U_{ik})}{p_{U_{ik}}(U_{ik})}\bigg)\Bigg)$\\\\\\
+$=\displaystyle\sum_{i=1}^N\displaystyle\sum_{k=1}^KKL(q_{U_{ik}}(U_{ik})||p_{U_{ik}}(U_{ik})$\\\\\\\\
+Here we see that we have a sum of $KL$ divergences between univariate Gaussians, which we know the expressions for from part 2.1. Thus, we have:\\\\
+$\displaystyle\sum_{i=1}^N\displaystyle\sum_{k=1}^KKL(q_{U_{ik}}(U_{ik})||p_{U_{ik}}(U_{ik})=\dfrac{1}{2}\displaystyle\sum_{i=1}^N\displaystyle\sum_{k=1}^K\Bigg(\log\Bigg(\dfrac{\sigma_U^2}{\lambda_{ik}^{(\sigma^2U)}}\Bigg)+\dfrac{\lambda_{ik}^{(\sigma^2U)}+\Big(\lambda_{ik}^{(\mu U)}\Big)^2}{\sigma_U^2}-1\Bigg)$.\\\\\\
+We see an analogous result for $KL\big(q_{V}(V)||p_{V}(V)\big)$. That is, we have:\\\\
+$KL\big(q_{V}(V)||p_{V}(V)\big)=\dfrac{1}{2}\displaystyle\sum_{j=1}^M\displaystyle\sum_{k=1}^K\Bigg(\log\Bigg(\dfrac{\sigma_V^2}{\lambda_{jk}^{(\sigma^2V)}}\Bigg)+\dfrac{\lambda_{jk}^{(\sigma^2V)}+\Big(\lambda_{jk}^{(\mu V)}\Big)^2}{\sigma_V^2}-1\Bigg)$\\\\
+\item The final term in $\mathcal{L}(\bm{\lambda})$ can be written as:\\\\
+$\displaystyle\sum_{(i,j)\in B}E_{q_{UV}}\Big(\log\big(\N(r_{ij}|U_i^TV_j,\sigma_{\epsilon}^2)\big)\Big)$\\\\\\
+According to the problem statement, we are going to approximate this with:\\\\
+$\displaystyle\sum_{(i,j)\in B}\log\big(\N(r_{ij}|\tilde{u}_i^T\tilde{v}_j,\sigma_{\epsilon}^2)\big)$\\\\\\
+$=-\dfrac{|B|}{2}\log(2\pi\sigma_{\epsilon}^2)-\dfrac{1}{2\sigma_{\epsilon}^2}\displaystyle\sum_{(i,j)\in B}(r_{ij}-\tilde{u}_i^T\tilde{v}_j)^2$\\\\\\
+Now we can write our full objective as:\\\\
+$\mathcal{L}(\bm{\lambda})\approx-\dfrac{1}{2}\displaystyle\sum_{i=1}^N\displaystyle\sum_{k=1}^K\Bigg(\log\Bigg(\dfrac{\sigma_U^2}{\lambda_{ik}^{(\sigma^2U)}}\Bigg)+\dfrac{\lambda_{ik}^{(\sigma^2U)}+\Big(\lambda_{ik}^{(\mu U)}\Big)^2}{\sigma_U^2}-1\Bigg)$\\\\\\
+$-\dfrac{1}{2}\displaystyle\sum_{j=1}^M\displaystyle\sum_{k=1}^K\Bigg(\log\Bigg(\dfrac{\sigma_V^2}{\lambda_{jk}^{(\sigma^2V)}}\Bigg)+\dfrac{\lambda_{jk}^{(\sigma^2V)}+\Big(\lambda_{jk}^{(\mu V)}\Big)^2}{\sigma_V^2}-1\Bigg)$\\\\\\
+$-\dfrac{|B|}{2}\log(2\pi\sigma_{\epsilon}^2)-\dfrac{1}{2\sigma_{\epsilon}^2}\displaystyle\sum_{(i,j)\in B}(r_{ij}-\tilde{u}_i^T\tilde{v}_j)^2$\\\\
+\item Note that $\lambda_{ik}^{(\sigma U)}=\sqrt{\lambda_{ik}^{(\sigma^2U)}}$ and $\lambda_{jk}^{(\sigma V)}=\sqrt{\lambda_{jk}^{(\sigma^2V)}}$\\\\
+$Z\sim\N(0,1)$\\\\
+$U_{ik}=Z\lambda_{ik}^{(\sigma U)}+\lambda_{ik}^{(\mu U)}$ $\forall$ $i,k$\\\\
+$V_{jk}=Z\lambda_{jk}^{(\sigma V)}+\lambda_{jk}^{(\mu V)}$ $\forall$ $j,k$\\\\
+We will use the notations $\tilde{z}_{U_{ik}}$ and $\tilde{z}_{V_{jk}}$ for the purposes of distinguishing samples that were drawn from the distribution of $Z$.\\\\
+We can re-write our full objective with alterations to the third term to reflect our reparameterization as:\\\\
+$\mathcal{L}(\bm{\lambda})\approx-\dfrac{1}{2}\displaystyle\sum_{i=1}^N\displaystyle\sum_{k=1}^K\Bigg(\log\Bigg(\dfrac{\sigma_U^2}{\lambda_{ik}^{(\sigma^2U)}}\Bigg)+\dfrac{\lambda_{ik}^{(\sigma^2U)}+\Big(\lambda_{ik}^{(\mu U)}\Big)^2}{\sigma_U^2}-1\Bigg)$\\\\\\
+$-\dfrac{1}{2}\displaystyle\sum_{j=1}^M\displaystyle\sum_{k=1}^K\Bigg(\log\Bigg(\dfrac{\sigma_V^2}{\lambda_{jk}^{(\sigma^2V)}}\Bigg)+\dfrac{\lambda_{jk}^{(\sigma^2V)}+\Big(\lambda_{jk}^{(\mu V)}\Big)^2}{\sigma_V^2}-1\Bigg)$\\\\\\
+$-\dfrac{|B|}{2}\log(2\pi\sigma_{\epsilon}^2)-\dfrac{1}{2\sigma_{\epsilon}^2}\displaystyle\sum_{(i,j)\in B}\bigg(r_{ij}-\displaystyle\sum_{k=1}^K\Big(\tilde{z}_{U_{ik}}\lambda_{ik}^{(\sigma U)}+\lambda_{ik}^{(\mu U)}\Big)\Big(\tilde{z}_{V_{jk}}\lambda_{jk}^{(\sigma V)}+\lambda_{jk}^{(\mu V)}\Big)\bigg)^2$
+\end{enumerate}
+
+
+\newpage
 \begin{problem}[Gibbs Sampling, 25pts].
 
   In this problem we will consider a different sampling-based approach for
@@ -264,10 +366,42 @@ That is, use all previous samples of $U, V$ to evaluate the predictive probabili
 \item One reason to be Bayesian is that you don't have to worry about overfitting.
 Run your Gibbs sampler for $K = 1$ to $K = 10$, and plot the training and test-set log-likelihood for each value of $K$.  
 How do the shapes of these curves differ from the curves you saw when doing maximum likelihood estimation in HW3?
-
-
 \end{enumerate}
 \end{problem}
 
 
+
+\begin{enumerate}[label=3.\arabic*.]
+\item Let $\mathbf{U}_i\sim\N(\mathbf{0},\sigma^2_U\mathbf{I})$ with $\mathbf{U}_i\in\R^K$ be the prior for the latent parameters for user $i$ $\forall$ $i\in\{1,\ldots,N\}$.\\
+Let $\mathbf{V}_j\sim\N(\mathbf{0},\sigma^2_V\mathbf{I})$ with $\mathbf{V}_j\in\R^K$ be the prior for the latent parameters for joke $j$ $\forall$ $j\in\{1,\ldots,M\}$.\\
+Let $\mathbf{U}\in\R^{N\times K}$ be a matrix with $\mathbf{U}_i$ as its $i$th row $\forall$ $i$.\\
+Let $\mathbf{V}\in\R^{M\times K}$ be a matrix with $\mathbf{V}_j$ as its $j$th row $\forall$ $j$.\\
+Let $\mathbf{V}^{(i)}$ be a matrix with $K$ columns and its rows as the rows in $\mathbf{V}$ corresponding to the jokes rated by user $i$ $\forall$ $i$.\\
+Let $\mathbf{U}^{(j)}$ be a matrix with $K$ columns and its rows as the rows $\mathbf{U}$ corresponding to the users who rated joke $j$ $\forall$ $j$.\\
+Let $\mathbf{R}\in\R^{N\times M}$ be a matrix with its $ij$th entry as $R_{ij}$, the rating by the $i$th user for the $j$th joke, $\forall$ $i,j$. $R_{ij}|\mathbf{U}_i,\mathbf{V}_j\sim\N(\mathbf{U}_i^T\mathbf{V}_j,\sigma_{\epsilon}^2)$ .\\
+Let $\mathbf{R}^{(i)}$ be the vector of ratings submitted by user $i$ $\forall$ $i$. The structure of the graphical model and properties of Gaussians allow us to write that $\mathbf{R}^{(i)}|\mathbf{U}_i,\mathbf{V}^{(i)}\sim\N(\mathbf{V}^{(i)}\mathbf{U}_i,\sigma_{\epsilon}^2\mathbf{I})$.\\
+Let $\mathbf{R}^{(j)'}$ be the vector of ratings submitted by users for joke $j$ $\forall$ $j$. The structure of the graphical model and properties of Gaussians allow us to write that $\mathbf{R}^{(j)'}|\mathbf{U}^{(j)},\mathbf{V}_j\sim\N(\mathbf{U}^{(j)}\mathbf{V}_j,\sigma_{\epsilon}^2\mathbf{I})$.\\\\
+Now we can write the posteriors for $\mathbf{U}_i$ and $\mathbf{V}_j$.\\\\
+$p(\mathbf{u}_i|\mathbf{r}^{(i)},\mathbf{v}^{(i)})\propto p(\mathbf{r}^{(i)}|\mathbf{u}_{i},\mathbf{v}^{(i)})\cdot p(\mathbf{u}_{i}|\mathbf{v}^{(i)})$\\\\
+$=p(\mathbf{r}^{(i)}|\mathbf{u}_{i},\mathbf{v}^{(i)})\cdot p(\mathbf{u}_{i})$\\\\
+$=\N(\mathbf{r}^{(i)}|\mathbf{v}^{(i)}\mathbf{u}_{i},\sigma_{\epsilon}^2\mathbf{I})\cdot \N(\mathbf{u}_{i}|\mathbf{0},\sigma_U^2\mathbf{I})$\\\\
+From here, using results from The Matrix Cookbook in section 8.1.8, we have the following:\\\\
+$\mathbf{U}_i|\mathbf{R}^{(i)},\mathbf{V}^{(i)}\sim\N(\bm{\theta}_i,\bm{\Psi}_i)$\\\\
+$\bm{\Psi}_i=\Bigg(\dfrac{1}{\sigma_U^2}\mathbf{I}+\dfrac{1}{\sigma_{\epsilon}^2}\mathbf{V}^{(i)T}\mathbf{V}^{(i)}\Bigg)^{-1}$\\\\\\
+$\bm{\theta}_i=\dfrac{1}{\sigma_{\epsilon}^2}\bm{\Psi}_i\mathbf{V}^{(i)T}\mathbf{R}^{(i)}$\\\\\\\\
+$p(\mathbf{v}_j|\mathbf{r}^{(j)'},\mathbf{u}^{(j)})\propto p(\mathbf{r}^{(j)'}|\mathbf{v}_{j},\mathbf{u}^{(j)})\cdot p(\mathbf{v}_{j}|\mathbf{u}^{(j)})$\\\\
+$=p(\mathbf{r}^{(j)'}|\mathbf{v}_{j},\mathbf{u}^{(j)})\cdot p(\mathbf{v}_{j})$\\\\
+$=\N(\mathbf{r}^{(j)'}|\mathbf{u}^{(j)}\mathbf{v}_{j},\sigma_{\epsilon}^2\mathbf{I})\cdot\N(\mathbf{v}_{j}|\mathbf{0},\sigma_V^2\mathbf{I})$\\\\
+From here, using results from The Matrix Cookbook in section 8.1.8, we have the following:\\\\
+$\mathbf{V}_j|\mathbf{R}^{(j)'},\mathbf{U}^{(j)}\sim\N(\bm{\alpha}_j,\bm{\beta}_j)$\\\\
+$\bm{\beta}_j=\Bigg(\dfrac{1}{\sigma_V^2}\mathbf{I}+\dfrac{1}{\sigma_{\epsilon}^2}\mathbf{U}^{(j)T}\mathbf{U}^{(j)}\Bigg)^{-1}$\\\\\\
+$\bm{\alpha}_j=\dfrac{1}{\sigma_{\epsilon}^2}\bm{\beta}_j\mathbf{U}^{(j)T}\mathbf{R}^{(j)'}$\\\\
+\item Pseudocode:
+\begin{enumerate}
+\item Initialize values for $\mathbf{V}_j$ by sampling once from its prior $\forall$ $j$.\\\\
+Repeat for some number of steps:
+\item Using the values for the samples in the previous step (after step (a), samples come from the posteriors for $\mathbf{V}_j$ $\forall$ $j$) and the ratings, sample once from the posterior for $\mathbf{U}_i$ $\forall$ $i$.
+\item Using the values for the samples in step (b) and the ratings, sample once from the posterior for $\mathbf{V}_j$ $\forall$ $j$.
+\end{enumerate}
+\end{enumerate}
 \end{document}
